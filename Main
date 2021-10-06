@@ -1,0 +1,20 @@
+systemctl stop solana #останавливаем ноду
+solana-ledger-tool --ledger /root/solana/ledger  create-snapshot 96965687 /root/solana/ledger --hard-fork 96965687
+nano /root/solana/solana.service #меняем сервисный файл добавляя команды ниже
+--wait-for-supermajority 96965687 \
+--no-snapshot-fetch \
+--no-genesis-fetch \
+--expected-bank-hash 5GSuuhkJfRqZK9LQdvFY7bramdNiQgTEFJp8w7DtZVUN \
+--expected-shred-version 37137 \
+--entrypoint 5.9.35.85:8000 \
+--entrypoint 94.198.53.85:8000 \
+--entrypoint 178.170.42.36:8000 \
+--known-validator eoKpUABi59aT4rR9HGS3LcMecfut9x7zJyodWWP43YQ \
+--known-validator F1TuusSghAobmbGAgNrdxRS9nBjwT6J1yyALUvpEA1is \
+--known-validator 9YVpEeZf8uBoUtzCFC6SSFDDqPt16uKFubNhLvGxeUDy \
+--known-validator GmgV3mnVohRz99rsnMNWNFqzop4oSgNv6Hx1kE7PKvYU \
+--known-validator GcibmF4zgb6Vr4bpZZYHGDPZNWiLnBDUHdpJZTsTDvwe \
+systemctl daemon-reload
+systemctl start solana
+solana --url http://127.0.0.1:8899 slot #тут должен появится слот
+tail -f /root/solana/solana.log | grep --line-buffered "active stake visible" #должны пойти проценты
